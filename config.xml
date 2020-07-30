@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <module>
-	<name>rfmcubeapi</name>
+	<name>rfmcube-prestashop-customapi-master</name>
 	<displayName><![CDATA[Rfmcube Custom API]]></displayName>
 	<version><![CDATA[1.0.0]]></version>
 	<description><![CDATA[Enanche the Prestashop API adding fields to the entities]]></description>
