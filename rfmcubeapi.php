@@ -24,7 +24,7 @@
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-include_once(_PS_MODULE_DIR_.'rfmcube-prestashop-customapi-master/classes/webservice/WebserviceSpecificManagementDetailedOrders.php');
+include_once(_PS_MODULE_DIR_.'rfmcubeapi/classes/webservice/WebserviceSpecificManagementDetailedOrders.php');
 
 
 if (!defined('_PS_VERSION_')) {
@@ -37,10 +37,10 @@ class Rfmcubeapi extends Module
 
     public function __construct()
     {
-        $this->name = 'rfmcube-prestashop-customapi-master';
+        $this->name = 'rfmcubeapi';
         $this->tab = 'administration';
         $this->version = '1.0.0';
-        $this->author = 'Rfmcube srl';
+        $this->author = 'HexLab Software';
         $this->need_instance = 0;
 
         /**
@@ -226,9 +226,9 @@ class Rfmcubeapi extends Module
     public function hookAddWebserviceResources() {
         return array(
             'detailedorders' => array(
-                'description' => 'RFM custom API orders',
+                'description' => 'RFM custom API orders', 
                 'specific_management' => true,
             )
-        );
+        ); 
     }
 }

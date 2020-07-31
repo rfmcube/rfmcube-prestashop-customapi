@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <module>
-	<name>rfmcube-prestashop-customapi-master</name>
-	<displayName><![CDATA[Rfmcube Custom API]]></displayName>
+	<name>rfmcubeapi</name>
+	<displayName><![CDATA[RFM cube API]]></displayName>
 	<version><![CDATA[1.0.0]]></version>
-	<description><![CDATA[Enanche the Prestashop API adding fields to the entities]]></description>
-	<author><![CDATA[Rfmcube srl]]></author>
+	<description><![CDATA[Expose the orders API]]></description>
+	<author><![CDATA[HexLab Software]]></author>
 	<tab><![CDATA[administration]]></tab>
 	<is_configurable>1</is_configurable>
 	<need_instance>1</need_instance>
