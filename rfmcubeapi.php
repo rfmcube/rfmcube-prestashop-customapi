@@ -40,7 +40,7 @@ class Rfmcubeapi extends Module
         $this->name = 'rfmcubeapi';
         $this->tab = 'administration';
         $this->version = '1.0.0';
-        $this->author = 'HexLab Software';
+        $this->author = 'Rfmcube srl';
         $this->need_instance = 0;
 
         /**
@@ -50,8 +50,8 @@ class Rfmcubeapi extends Module
 
         parent::__construct();
 
-        $this->displayName = $this->l('RFM cube API');
-        $this->description = $this->l('Expose the orders API');
+        $this->displayName = $this->l('Rfmcube Custom API module');
+        $this->description = $this->l('Enhance the prestashop REST API to add more details to customers and orders');
 
         $this->confirmUninstall = $this->l('');
 
@@ -226,9 +226,9 @@ class Rfmcubeapi extends Module
     public function hookAddWebserviceResources() {
         return array(
             'detailedorders' => array(
-                'description' => 'RFM custom API orders', 
+                'description' => 'RFM custom API orders',
                 'specific_management' => true,
             )
-        ); 
+        );
     }
 }

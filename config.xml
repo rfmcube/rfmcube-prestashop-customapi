@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <module>
 	<name>rfmcubeapi</name>
-	<displayName><![CDATA[RFM cube API]]></displayName>
+	<displayName><![CDATA[Rfmcube Custom API module]]></displayName>
 	<version><![CDATA[1.0.0]]></version>
-	<description><![CDATA[Expose the orders API]]></description>
-	<author><![CDATA[HexLab Software]]></author>
+	<description><![CDATA[Enhance the prestashop REST API to add more details to customers and orders]]></description>
+	<author><![CDATA[Rfmcube srl]]></author>
 	<tab><![CDATA[administration]]></tab>
 	<is_configurable>1</is_configurable>
 	<need_instance>1</need_instance>
