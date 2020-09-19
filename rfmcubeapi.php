@@ -24,12 +24,11 @@
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-include_once(_PS_MODULE_DIR_.'rfmcubeapi/classes/webservice/WebserviceSpecificManagementDetailedOrders.php');
-
-
 if (!defined('_PS_VERSION_')) {
     exit;
 }
+
+include_once(_PS_MODULE_DIR_.'rfmcubeapi/classes/webservice/WebserviceSpecificManagementDetailedOrders.php');
 
 class Rfmcubeapi extends Module
 {
@@ -42,6 +41,7 @@ class Rfmcubeapi extends Module
         $this->version = '1.0.0';
         $this->author = 'Rfmcube srl';
         $this->need_instance = 0;
+        $this->isPS16 = stripos(_PS_VERSION_,'1.6')!==false;
 
         /**
          * Set $this->bootstrap to true if your module is compliant with bootstrap (PrestaShop 1.6)
@@ -57,7 +57,7 @@ class Rfmcubeapi extends Module
 
         $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
 
-        if(!$this->isRegisteredInHook('addWebserviceResources')) $this->registerHook('addWebserviceResources');
+        if(!$this->isPS16 && !$this->isRegisteredInHook('addWebserviceResources')) $this->registerHook('addWebserviceResources');
     }
 
     /**
