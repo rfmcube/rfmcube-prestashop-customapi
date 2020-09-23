@@ -113,7 +113,7 @@ class WebserviceSpecificManagementDetailedOrders implements WebserviceSpecificMa
           foreach($order->items as &$product){
             $product["brand"] = (new Manufacturer($product["id_manufacturer"]))->name ?: "";
             $product["categories"] = array_values(Product::getProductCategoriesFull($product["product_id"]));
-            
+
             /**
              * Build the category tree
              */
@@ -170,7 +170,7 @@ class WebserviceSpecificManagementDetailedOrders implements WebserviceSpecificMa
     {
         $sql = 'SELECT `id_order`
                 FROM `' . _DB_PREFIX_ . 'orders`
-                WHERE DATE_ADD(date_upd, INTERVAL -1 DAY) <= \'' . pSQL($date_to) . '\' AND date_upd >= \'' . pSQL($date_from) . '\'
+                WHERE DATE_ADD(date_add, INTERVAL -1 DAY) <= \'' . pSQL($date_to) . '\' AND date_add >= \'' . pSQL($date_from) . '\'
                     ' . Shop::addSqlRestriction()
                     . ($type ? ' AND `' . bqSQL($type) . '_number` != 0' : '')
                     . ($id_customer ? ' AND id_customer = ' . (int) $id_customer : '');
