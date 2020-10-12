@@ -104,8 +104,16 @@ class WebserviceSpecificManagementDetailedOrders implements WebserviceSpecificMa
         foreach($ids as $order_id){
           $order = new Order($order_id);
           $order->items = $order->getCartProducts();
+
           $order->address_delivery = new Address($order->id_address_delivery);
+          if(!is_null($order->address_delivery->id_state)){
+            $order->address_delivery->state = new State($order->address_delivery->id_state);
+          }
+ 
           $order->invoice_delivery = new Address($order->id_address_invoice);
+          if(!is_null($order->invoice_delivery->id_state)){
+            $order->invoice_delivery->state = new State($order->invoice_delivery->id_state);
+          }
 
           /**
            * Loop for every product in order
