@@ -38,7 +38,7 @@ class Rfmcubeapi extends Module
     {
         $this->name = 'rfmcubeapi';
         $this->tab = 'administration';
-        $this->version = '1.5.0';
+        $this->version = '1.6.0';
         $this->author = 'Rfmcube srl';
         $this->need_instance = 0;
         $this->isPS16 = stripos(_PS_VERSION_,'1.6')!==false;

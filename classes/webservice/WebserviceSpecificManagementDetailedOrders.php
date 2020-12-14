@@ -109,11 +109,15 @@ class WebserviceSpecificManagementDetailedOrders implements WebserviceSpecificMa
           if(!is_null($order->address_delivery->id_state)){
             $order->address_delivery->state = new State($order->address_delivery->id_state);
           }
- 
+
           $order->invoice_delivery = new Address($order->id_address_invoice);
           if(!is_null($order->invoice_delivery->id_state)){
             $order->invoice_delivery->state = new State($order->invoice_delivery->id_state);
           }
+
+          $cart = new Cart($order->id_cart);
+          // $order->cart = $cart;
+          $order->cart_rules = $cart->getCartRules();
 
           /**
            * Loop for every product in order
