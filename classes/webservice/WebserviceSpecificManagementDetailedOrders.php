@@ -145,13 +145,19 @@ class WebserviceSpecificManagementDetailedOrders implements WebserviceSpecificMa
           $sort = str_replace(["[","]"],"",$this->wsObject->urlFragments['sort']);
           $order = array_reverse(explode("_",$sort))[0];
           $sort = str_replace("_{$order}","",$sort);
-          usort($orders,function($orderA,$orderB) use ($order,$sort){
-            if($order=="ASC"){
-              return $orderA->{$sort}>=$orderB->{$sort};
-            }
-
-            return $orderA->{$sort}<=$orderB->{$sort};
-          });
+          usort($orders, function ($orderA, $orderB) use ($sort, $order) {
+              if ($order == "ASC") {
+                if ($orderA->{$sort} == $orderB->{$sort}) {
+                  return 0;
+                }
+                return ($orderA->{$sort} < $orderB->{$sort}) ? -1 : 1;
+              } else {
+                if ($orderA->{$sort} == $orderB->{$sort}) {
+                  return 0;
+                }
+                return ($orderA->{$sort} > $orderB->{$sort}) ? -1 : 1;
+              }
+            });
         }
 
         $this->output = json_encode(["orders" => $orders]);
