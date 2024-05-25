@@ -2,7 +2,7 @@
 <module>
 	<name>rfmcubeapi</name>
 	<displayName><![CDATA[Rfmcube Custom API module]]></displayName>
-	<version><![CDATA[1.7.0]]></version>
+	<version><![CDATA[1.7.1]]></version>
 	<description><![CDATA[Enhance the prestashop REST API to add more details to customers and orders]]></description>
 	<author><![CDATA[Rfmcube srl]]></author>
 	<tab><![CDATA[administration]]></tab>
