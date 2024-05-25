@@ -1,5 +1,5 @@
 # rfmcube-prestashop-customapi
-Extend the Prestashop REST api for Rfmcube. Compatible with Prestashop 1.7.x and above.
+Extend the Prestashop REST api for Rfmcube. Compatible with Prestashop 1.6.x and above.
 
 ## Important:
 - We recommend you to duplicate your live store on a staging/test site and try installation on it in advanced.
