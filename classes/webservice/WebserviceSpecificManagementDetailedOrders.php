@@ -1,4 +1,5 @@
 <?php
+
 /**
  * 2007-2018 PrestaShop.
  *
@@ -23,8 +24,8 @@
  * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
  */
-class WebserviceSpecificManagementDetailedOrders implements WebserviceSpecificManagementInterface
-{
+class WebserviceSpecificManagementDetailedOrders implements WebserviceSpecificManagementInterface {
+
     /** @var WebserviceOutputBuilder */
     protected $objOutput;
     protected $output;
@@ -41,59 +42,52 @@ class WebserviceSpecificManagementDetailedOrders implements WebserviceSpecificMa
      *
      * @return WebserviceSpecificManagementInterface
      */
-    public function setObjectOutput(WebserviceOutputBuilderCore $obj)
-    {
+    public function setObjectOutput(WebserviceOutputBuilderCore $obj) {
         $this->objOutput = $obj;
 
         return $this;
     }
 
-    public function setWsObject(WebserviceRequestCore $obj)
-    {
+    public function setWsObject(WebserviceRequestCore $obj) {
         $this->wsObject = $obj;
 
         return $this;
     }
 
-    public function getWsObject()
-    {
+    public function getWsObject() {
         return $this->wsObject;
     }
 
-    public function getObjectOutput()
-    {
+    public function getObjectOutput() {
         return $this->objOutput;
     }
 
-    public function setUrlSegment($segments)
-    {
+    public function setUrlSegment($segments) {
         $this->urlSegment = $segments;
 
         return $this;
     }
 
-    public function getUrlSegment()
-    {
+    public function getUrlSegment() {
         return $this->urlSegment;
     }
 
     /**
      * Management of search.
      */
-    public function manage()
-    {
+    public function manage() {
         if (!isset($this->wsObject->urlFragments['filter']) && (!isset($this->wsObject->urlFragments['filter']["date_add"]) || !isset($this->wsObject->urlFragments['filter']['date_upd']) || !isset($this->wsObject->urlFragments["filter"]["id"]))) {
             throw new WebserviceException('You have to set an order \'filter[id]\' or \'filter[date_upd]\' or \'filter[date_add]\'', array(100, 400));
         }
 
-        if(isset($this->wsObject->urlFragments['filter']['date_upd'])){
-          $dates = explode(",",str_replace(["[","]"],"",$this->wsObject->urlFragments['filter']['date_upd']));
-          $ids = Order::getOrdersIdByDate($dates[0],$dates[1]);
-        }else if(isset($this->wsObject->urlFragments['filter']['date_add'])){
-          $dates = explode(",",str_replace(["[","]"],"",$this->wsObject->urlFragments['filter']['date_add']));
-          $ids = $this->getOrdersIdByAddDate($dates[0],$dates[1]);
-        }else{
-          $ids = explode("|",str_replace(["[","]"],"",$this->wsObject->urlFragments['filter']['id']));
+        if (isset($this->wsObject->urlFragments['filter']['date_upd'])) {
+            $dates = explode(",", str_replace(["[", "]"], "", $this->wsObject->urlFragments['filter']['date_upd']));
+            $ids = Order::getOrdersIdByDate($dates[0], $dates[1]);
+        } else if (isset($this->wsObject->urlFragments['filter']['date_add'])) {
+            $dates = explode(",", str_replace(["[", "]"], "", $this->wsObject->urlFragments['filter']['date_add']));
+            $ids = $this->getOrdersIdByAddDate($dates[0], $dates[1]);
+        } else {
+            $ids = explode("|", str_replace(["[", "]"], "", $this->wsObject->urlFragments['filter']['id']));
         }
 
         $orders = [];
@@ -101,91 +95,94 @@ class WebserviceSpecificManagementDetailedOrders implements WebserviceSpecificMa
         /**
          * Loop for every order id
          */
-        foreach($ids as $order_id){
-          $order = new Order($order_id);
-         
-          try { 
-            $order->items = $order->getCartProducts();
-          } catch (Exception $e) {
-             error_log('Errore durante il recupero delle items: ' . $e->getMessage());
-          }
-          try {
-            if (!empty($order->id_address_delivery)) {
-                $order->address_delivery = new Address($order->id_address_delivery);
-                if (!Validate::isLoadedObject($order->address_delivery)) {
-                    throw new Exception('Address delivery not found.');
+        foreach ($ids as $order_id) {
+            $order = new Order($order_id);
+
+            try {
+                if (!empty($order->id_address_delivery)) {
+                    $order->address_delivery = new Address($order->id_address_delivery);
+                    if (!Validate::isLoadedObject($order->address_delivery)) {
+                        throw new Exception('Address delivery not found.');
+                    }
+                    if (!is_null($order->address_delivery->id_state)) {
+                        $order->address_delivery->state = new State($order->address_delivery->id_state);
+                    }
                 }
-                if (!is_null($order->address_delivery->id_state)) {
-                    $order->address_delivery->state = new State($order->address_delivery->id_state);
-                }
+            } catch (Exception $e) {
+                $order->address_delivery = null;
+                error_log('Errore durante il recupero dell\'indirizzo di consegna: ' . $e->getMessage());
             }
-        } catch (Exception $e) {
-            $order->address_delivery=null;
-            error_log('Errore durante il recupero dell\'indirizzo di consegna: ' . $e->getMessage());
-        }
-        
-        try {
-            if (!empty($order->id_address_invoice)) {
-                $order->invoice_delivery = new Address($order->id_address_invoice);
-                if (!Validate::isLoadedObject($order->invoice_delivery)) {
-                    throw new Exception('Address invoice not found.');
+
+            try {
+                if (!empty($order->id_address_invoice)) {
+                    $order->invoice_delivery = new Address($order->id_address_invoice);
+                    if (!Validate::isLoadedObject($order->invoice_delivery)) {
+                        throw new Exception('Address invoice not found.');
+                    }
+                    if (!is_null($order->invoice_delivery->id_state)) {
+                        $order->invoice_delivery->state = new State($order->invoice_delivery->id_state);
+                    }
                 }
-                if (!is_null($order->invoice_delivery->id_state)) {
-                    $order->invoice_delivery->state = new State($order->invoice_delivery->id_state);
-                }
+            } catch (Exception $e) {
+                $order->invoice_delivery = null;
+                error_log('Errore durante il recupero dell\'indirizzo di fatturazione: ' . $e->getMessage());
             }
-        } catch (Exception $e) {
-            $order->invoice_delivery=null;
-            error_log('Errore durante il recupero dell\'indirizzo di fatturazione: ' . $e->getMessage());
-        }
 
-          $cart = new Cart($order->id_cart);
-          // $order->cart = $cart;
-          
-          try { 
-            $order->cart_rules = $cart->getCartRules();
-          } catch (Exception $e) {
-             error_log('Errore durante il recupero delle cart rules: ' . $e->getMessage());
-          }
+            $cart = new Cart($order->id_cart);
+            // $order->cart = $cart;
 
-          /**
-           * Loop for every product in order
-           */
-          foreach($order->items as &$product){
-            $product["brand"] = (new Manufacturer($product["id_manufacturer"]))->name ?: "";
-            $product["categories"] = array_values(Product::getProductCategoriesFull($product["product_id"]));
-
-            /**
-             * Build the category tree
-             */
-            foreach($product["categories"] as $index => &$category){
-              $category_id = $category["id_category"];
-              $category["tree"][] = $category_id;
-
-              $this->getCategoryProductTree($category_id,$category);
-
-              if($index==count($product["categories"])-1) $category["tree"] = array_reverse($category["tree"]);
+            try {
+                $order->cart_rules = $cart->getCartRules();
+            } catch (Exception $e) {
+                error_log('Errore durante il recupero delle cart rules: ' . $e->getMessage());
             }
-          }
-          array_push($orders,$order);
+
+            try {
+                $order->items = $order->getCartProducts();
+
+                /**
+                 * Loop for every product in order
+                 */
+                foreach ($order->items as &$product) {
+                    $product["brand"] = (new Manufacturer($product["id_manufacturer"]))->name ?: "";
+                    $product["categories"] = array_values(Product::getProductCategoriesFull($product["product_id"]));
+
+                    /**
+                     * Build the category tree
+                     */
+                    foreach ($product["categories"] as $index => &$category) {
+                        $category_id = $category["id_category"];
+                        $category["tree"][] = $category_id;
+
+                        $this->getCategoryProductTree($category_id, $category);
+
+                        if ($index == count($product["categories"]) - 1)
+                            $category["tree"] = array_reverse($category["tree"]);
+                    }
+                }
+            } catch (Exception $e) {
+                error_log('Errore durante il recupero delle items: ' . $e->getMessage());
+            }
+
+            array_push($orders, $order);
         }
 
-        if(isset($this->wsObject->urlFragments['sort'])){
-          $sort = str_replace(["[","]"],"",$this->wsObject->urlFragments['sort']);
-          $order = array_reverse(explode("_",$sort))[0];
-          $sort = str_replace("_{$order}","",$sort);
-          usort($orders, function ($orderA, $orderB) use ($sort, $order) {
-              if ($order == "ASC") {
-                if ($orderA->{$sort} == $orderB->{$sort}) {
-                  return 0;
+        if (isset($this->wsObject->urlFragments['sort'])) {
+            $sort = str_replace(["[", "]"], "", $this->wsObject->urlFragments['sort']);
+            $order = array_reverse(explode("_", $sort))[0];
+            $sort = str_replace("_{$order}", "", $sort);
+            usort($orders, function ($orderA, $orderB) use ($sort, $order) {
+                if ($order == "ASC") {
+                    if ($orderA->{$sort} == $orderB->{$sort}) {
+                        return 0;
+                    }
+                    return ($orderA->{$sort} < $orderB->{$sort}) ? -1 : 1;
+                } else {
+                    if ($orderA->{$sort} == $orderB->{$sort}) {
+                        return 0;
+                    }
+                    return ($orderA->{$sort} > $orderB->{$sort}) ? -1 : 1;
                 }
-                return ($orderA->{$sort} < $orderB->{$sort}) ? -1 : 1;
-              } else {
-                if ($orderA->{$sort} == $orderB->{$sort}) {
-                  return 0;
-                }
-                return ($orderA->{$sort} > $orderB->{$sort}) ? -1 : 1;
-              }
             });
         }
 
@@ -197,30 +194,28 @@ class WebserviceSpecificManagementDetailedOrders implements WebserviceSpecificMa
      *
      * @return string
      */
-    public function getContent()
-    {
+    public function getContent() {
         return $this->output;
     }
 
     /**
      * Returns all the product category ids tree
      */
-    private function getCategoryProductTree($category_id,&$category){
-      do{
-        $id_parent = (new Category($category_id))->id_parent;
-        $category["tree"][] = $id_parent;
-        $category_id = $id_parent;
-      }while($id_parent!=1);
+    private function getCategoryProductTree($category_id, &$category) {
+        do {
+            $id_parent = (new Category($category_id))->id_parent;
+            $category["tree"][] = $id_parent;
+            $category_id = $id_parent;
+        } while ($id_parent != 1);
     }
 
-    private function getOrdersIdByAddDate($date_from, $date_to, $id_customer = null, $type = null)
-    {
+    private function getOrdersIdByAddDate($date_from, $date_to, $id_customer = null, $type = null) {
         $sql = 'SELECT `id_order`
                 FROM `' . _DB_PREFIX_ . 'orders`
                 WHERE DATE_ADD(date_add, INTERVAL -1 DAY) <= \'' . pSQL($date_to) . '\' AND date_add >= \'' . pSQL($date_from) . '\'
                     ' . Shop::addSqlRestriction()
-                    . ($type ? ' AND `' . bqSQL($type) . '_number` != 0' : '')
-                    . ($id_customer ? ' AND id_customer = ' . (int) $id_customer : '');
+                . ($type ? ' AND `' . bqSQL($type) . '_number` != 0' : '')
+                . ($id_customer ? ' AND id_customer = ' . (int) $id_customer : '');
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($sql);
 
         $orders = array();
