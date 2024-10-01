@@ -103,21 +103,50 @@ class WebserviceSpecificManagementDetailedOrders implements WebserviceSpecificMa
          */
         foreach($ids as $order_id){
           $order = new Order($order_id);
-          $order->items = $order->getCartProducts();
-
-          $order->address_delivery = new Address($order->id_address_delivery);
-          if(!is_null($order->address_delivery->id_state)){
-            $order->address_delivery->state = new State($order->address_delivery->id_state);
+         
+          try { 
+            $order->items = $order->getCartProducts();
+          } catch (Exception $e) {
+             error_log('Errore durante il recupero delle items: ' . $e->getMessage());
           }
-
-          $order->invoice_delivery = new Address($order->id_address_invoice);
-          if(!is_null($order->invoice_delivery->id_state)){
-            $order->invoice_delivery->state = new State($order->invoice_delivery->id_state);
-          }
+          try {
+            if (!empty($order->id_address_delivery)) {
+                $order->address_delivery = new Address($order->id_address_delivery);
+                if (!Validate::isLoadedObject($order->address_delivery)) {
+                    throw new Exception('Address delivery not found.');
+                }
+                if (!is_null($order->address_delivery->id_state)) {
+                    $order->address_delivery->state = new State($order->address_delivery->id_state);
+                }
+            }
+        } catch (Exception $e) {
+            $order->address_delivery=null;
+            error_log('Errore durante il recupero dell\'indirizzo di consegna: ' . $e->getMessage());
+        }
+        
+        try {
+            if (!empty($order->id_address_invoice)) {
+                $order->invoice_delivery = new Address($order->id_address_invoice);
+                if (!Validate::isLoadedObject($order->invoice_delivery)) {
+                    throw new Exception('Address invoice not found.');
+                }
+                if (!is_null($order->invoice_delivery->id_state)) {
+                    $order->invoice_delivery->state = new State($order->invoice_delivery->id_state);
+                }
+            }
+        } catch (Exception $e) {
+            $order->invoice_delivery=null;
+            error_log('Errore durante il recupero dell\'indirizzo di fatturazione: ' . $e->getMessage());
+        }
 
           $cart = new Cart($order->id_cart);
           // $order->cart = $cart;
-          $order->cart_rules = $cart->getCartRules();
+          
+          try { 
+            $order->cart_rules = $cart->getCartRules();
+          } catch (Exception $e) {
+             error_log('Errore durante il recupero delle cart rules: ' . $e->getMessage());
+          }
 
           /**
            * Loop for every product in order
