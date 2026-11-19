@@ -1,4 +1,8 @@
 # rfmcube-prestashop-customapi
+
+> **⚠️ This module is no longer required.**
+> Rfmcube now connects to your store without this extension: you don't need to install it on your store. This repository is kept for reference only and is no longer maintained.
+
 Extend the Prestashop REST api for Rfmcube. Compatible with Prestashop 1.6.x and above.
 
 ## Important:
